@@ -5,10 +5,14 @@ MAINTAINER James Matsumura (jmatsumura@som.umaryland.edu)
 
 # Install Apache and git
 RUN sudo apt-get update && sudo apt-get install -y apache2 \
-							git 
+							git \
+							wget
+
+# Make the custom conf directory available to Apache
+RUN sudo mkdir /etc/apache2/conf.d 
 
 # Get the pre-configured conf file
-RUN sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/apache.conf -O /etc/apache2/apache2.conf 
+RUN sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/apache2.conf -O /etc/apache2/apache2.conf 
 
 # Start the Apache server
 RUN sudo service apache2 start 
