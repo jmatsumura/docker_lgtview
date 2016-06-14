@@ -3,7 +3,7 @@ FROM ubuntu:14.04
 
 MAINTAINER James Matsumura (jmatsumura@som.umaryland.edu)
 
-# Install Perl
+# Install Perl AND MySQL (for now, moving MySQL later)
 RUN sudo apt-get update && sudo apt-get install -y perl \
 							build-essential \
 							apt-utils \
