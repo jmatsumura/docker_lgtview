@@ -13,7 +13,11 @@ Containers:
 as well as those to scripts needed to format and load a custom dataset 
 
 ./TwinBLAST - contains the scripts and annotation DB for the TwinBLAST interface
-that can be reached through LGTview
+that can be reached through LGTview. While not ideal to have two components covered
+by one container, this container also houses the MySQL backend necessary for the 
+curation functionality of TwinBLAST. This is because some of the perl modules 
+require MySQL be present before their installation. Will be best to split these 
+down the line
 
 ./krona - houses code to generate the interactive krona plots for the main interface
 of LGTview
@@ -21,9 +25,7 @@ of LGTview
 ./Apache - this container houses the web server front-end along with the ExtJS 
 dependencies 
 
-Images:
-
-MongoDB - houses the backend DB that LGTview pulls from
+./MongoDB - houses the backend DB that LGTview pulls from
 
 # TO BE ADDED WITH FUTURE UPDATES
 Containers:
