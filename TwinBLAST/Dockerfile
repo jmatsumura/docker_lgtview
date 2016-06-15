@@ -17,6 +17,9 @@ RUN sudo apt-get update && sudo apt-get install -y perl \
 							cpanminus \
 							git
 
+# Startup MySQL
+sudo service mysql start
+
 # Configure MySQL. Combined to one line so that
 # multiple images are not made for this step.
 RUN sudo mysql -u root -h localhost -e "CREATE USER 'twinblast'@'localhost' IDENTIFIED BY 'twinblast';GRANT ALL on twinblast.* TO 'twinblast'@'localhost';CREATE DATABASE twinblast;CREATE TABLE twinblast.curation(seq_id VARCHAR(100), cv_id INT, PRIMARY KEY(seq_id));CREATE TABLE twinblast.cv(name VARCHAR(100));ALTER TABLE twinblast.cv ADD COLUMN id INT NOT NULL AUTO_INCREMENT FIRST, ADD primary KEY id(id); ALTER TABLE twinblast.cv ADD UNIQUE(name);INSERT INTO twinblast.cv (name) VALUES ('yes');INSERT INTO twinblast.cv (name) VALUES ('no');INSERT INTO twinblast.cv (name) VALUES ('maybe');"
