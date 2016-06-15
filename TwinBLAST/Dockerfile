@@ -18,7 +18,7 @@ RUN sudo apt-get update && sudo apt-get install -y perl \
 							git
 
 # Startup MySQL
-sudo service mysql start
+RUN sudo service mysql start
 
 # Configure MySQL. Combined to one line so that
 # multiple images are not made for this step.
