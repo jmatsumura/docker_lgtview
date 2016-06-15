@@ -1,5 +1,6 @@
-# Use Ubuntu as the OS
+# Use Ubuntu as the OS and bash
 FROM ubuntu:14.04
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 MAINTAINER James Matsumura (jmatsumura@som.umaryland.edu)
 
@@ -10,10 +11,10 @@ RUN sudo apt-get update && sudo apt-get install -y apache2 \
 
 # Make the custom conf directory available to Apache
 RUN sudo mkdir /etc/apache2/conf.d \
-		/export/lgt/indexes \
-		/export/lgt/files \
-		/var/www/html/conf \
-		/tmp
+				/var/www/html/conf \
+
+# Make the other directories for housing files
+RUN sudo mkdir -p /export/lgt/{files,indexes}
 
 # Get the pre-configured conf file
 RUN sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/apache2.conf -O /etc/apache2/apache2.conf 
@@ -30,4 +31,4 @@ RUN sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master
 RUN sudo service apache2 start 
 
 # Place ExtJS library accessible to webserver
-RUN sudo git clone github.com/probonogeek/extjs.git /var/www/html/ext-4.1.1a
+RUN sudo git clone https://github.com/probonogeek/extjs.git /var/www/html/ext-4.1.1a
