@@ -19,6 +19,8 @@ RUN sudo apt-get update && sudo apt-get install -y perl \
 
 # Startup MySQL
 RUN sudo service mysql start
+RUN sudo chmod 777 /var/run/mysqld/
+RUN sudo ln -s /var/run/mysqld/mysql.sock /tmp/mysql.sock
 
 # Configure MySQL. Combined to one line so that
 # multiple images are not made for this step.
