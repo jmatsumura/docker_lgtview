@@ -4,8 +4,8 @@ services:
  Apache:
   build: ./Apache/.
   image: apache:latest
-  volumes:
-   - "./.server/apache:/var/www/html"
+  volumes_from:
+   - TwinBLAST
   ports:
    - 8080:80
 
@@ -25,14 +25,10 @@ services:
  TwinBLAST:
   build: ./TwinBLAST/.
   image: twinblast:latest
-  volumes:
-   - "./.server/apache:/twinblast/www/"
   depends_on:
    - MySQL
-   - Apache
   links:
    - MySQL
-   - Apache
   environment:
    TWINBLAST_DB_HOST: MySQL:3306
    TWINBLAST_DB_PASSWORD: twinblast

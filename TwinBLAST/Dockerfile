@@ -36,3 +36,9 @@ RUN cpanm --force CGI \
 
 # Get the TwinBLAST code
 RUN sudo git clone https://github.com/IGS/twinblast.git
+
+# Setup a volume mount that Apache can recognize
+RUN sudo mkdir -p /var/www/html
+RUN sudo mv /twinblast/www/* /var/www/html/.
+
+VOLUME ["/var/www/html"]

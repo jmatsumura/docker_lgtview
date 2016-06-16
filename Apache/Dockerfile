@@ -30,6 +30,9 @@ RUN sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master
 # Place ExtJS library accessible to webserver
 RUN sudo git clone https://github.com/probonogeek/extjs.git /var/www/html/ext-4.1.1a
 
+# Let the webserver directory be shared with LGTview/TwinBLAST
+VOLUME ["/var/www/html"]
+
 # Start the Apache server
 EXPOSE 80
 CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
