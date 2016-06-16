@@ -27,8 +27,9 @@ RUN sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master
 # 2. Conf for TwinBLAST DB access
 RUN sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/curation_db.ini -O /var/www/html/conf/curation_db.ini
 
-# Start the Apache server
-RUN sudo service apache2 start 
-
 # Place ExtJS library accessible to webserver
 RUN sudo git clone https://github.com/probonogeek/extjs.git /var/www/html/ext-4.1.1a
+
+# Start the Apache server
+EXPOSE 80
+CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]

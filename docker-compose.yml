@@ -1,0 +1,38 @@
+version: '2'
+services: 
+
+ Apache:
+  build: ./Apache/.
+  image: apache:latest
+  volumes:
+   - "./.server/apache:/var/www/html"
+  ports:
+   - 8080:80
+
+ MySQL:
+  image: mysql
+  volumes:
+   - "./.data/db:/var/lib/mysql"
+  restart: always
+  environment:
+   MYSQL_ALLOW_EMPTY_PASSWORD: 1
+   MYSQL_DATABASE: twinblast
+   MYSQL_USER: twinblast
+   MYSQL_PASSWORD: twinblast
+  expose: 
+   - "3306"
+
+ TwinBLAST:
+  build: ./TwinBLAST/.
+  image: twinblast:latest
+  volumes:
+   - "./.server/apache:/twinblast/www/"
+  depends_on:
+   - MySQL
+   - Apache
+  links:
+   - MySQL
+   - Apache
+  environment:
+   TWINBLAST_DB_HOST: MySQL:3306
+   TWINBLAST_DB_PASSWORD: twinblast
