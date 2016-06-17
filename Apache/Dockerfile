@@ -4,9 +4,6 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 MAINTAINER James Matsumura (jmatsumura@som.umaryland.edu)
 
-# Establish Apache user
-RUN sudo groupadd -r apache && useradd -r -g apache apache
-
 # Install Apache and git
 RUN sudo apt-get update && sudo apt-get install -y apache2 \
 							git \
@@ -15,27 +12,54 @@ RUN sudo apt-get update && sudo apt-get install -y apache2 \
 # Make the custom conf directory available to Apache
 RUN sudo mkdir /etc/apache2/conf.d \
 				/var/www/html/conf \
+				&& sudo mkdir -p /export/lgt/{files,indexes}
 
-# Make the other directories for housing files
-RUN sudo mkdir -p /export/lgt/{files,indexes}
-
-# Get the pre-configured conf file
-RUN sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/apache2.conf -O /etc/apache2/apache2.conf 
-
-# Now pull any other conf files that need to set web environmental variables or
-# be web-accessible by scripts
-# 1. Conf for TwinBLAST
-RUN sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/twinblast.conf -O /etc/apache2/conf.d/twinblast.conf 
-
-# 2. Conf for TwinBLAST DB access
-RUN sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/curation_db.ini -O /var/www/html/conf/curation_db.ini
+# Get the pre-configured conf files
+RUN sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/apache2.conf -O /etc/apache2/apache2.conf \
+		&& sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/twinblast.conf -O /etc/apache2/conf.d/twinblast.conf \
+		&& sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/curation_db.ini -O /var/www/html/conf/curation_db.ini
 
 # Place ExtJS library accessible to webserver
 RUN sudo git clone https://github.com/probonogeek/extjs.git /var/www/html/ext-4.1.1a
 
-# Let the webserver directory be shared with LGTview/TwinBLAST
-RUN sudo chown -R apache:apache /var && sudo chmod -R 777 /var
-VOLUME /var/www/html
+# Next few sections will have a few images (each section will account 
+# for dependencies for a particular program).
+
+### TwinBLAST ###
+
+# Install Perl and base MySQL so that the perl libs that
+# depend on a MySQL presence are installed properly. This
+# may pose an issue later but for now, try keep separate containers
+# for this and for MySQL.
+RUN sudo apt-get update && sudo apt-get install -y perl \
+                            build-essential \
+                            apt-utils \
+                            gcc-multilib \
+                            libgd-gd2-perl \
+                            mysql-server \
+                            libmysqlclient-dev \
+                            cpanminus
+
+# Install necessary perl dependencies to run TwinBLAST
+RUN cpanm --force CGI \
+    DBI \
+    DBD::mysql \
+    File::Slurp \
+    Tie::File \
+    File::Basename \
+    Digest::MD5 \
+    URI::Escape \
+    JSON \
+    Config::IniFiles \
+    POSIX \
+    IPC::Open3 \
+    Bio::Root::Version \
+    Bio::Graphics
+
+################
+
+# Arrange TwinBLAST in the web environment
+RUN sudo mv /twinblast/www/html/* /var/www/html/. && sudo mv /twinblast/www/cgi /var/www
 
 # Start the Apache server
 EXPOSE 80
