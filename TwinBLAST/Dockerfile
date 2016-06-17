@@ -40,6 +40,7 @@ RUN cpanm --force CGI \
 # Get the TwinBLAST code
 RUN sudo git clone https://github.com/IGS/twinblast.git
 
-VOLUME /twinblast/www
-RUN sudo chown -R twinblast:twinblast /twinblast/www 
-RUN sudo chmod -R 777 /twinblast/www
+RUN sudo mkdir -p /var/www && sudo mv /twinblast/www/html /var/www/html && sudo mv /twinblast/www/cgi /var/www/cgi
+RUN sudo chown -R twinblast:twinblast /var/www && sudo chmod -R 777 /var/www
+VOLUME /var/www/html
+VOLUME /var/www/cgi

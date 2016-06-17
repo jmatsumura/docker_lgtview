@@ -34,8 +34,8 @@ RUN sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master
 RUN sudo git clone https://github.com/probonogeek/extjs.git /var/www/html/ext-4.1.1a
 
 # Let the webserver directory be shared with LGTview/TwinBLAST
+RUN sudo chown -R apache:apache /var && sudo chmod -R 777 /var
 VOLUME /var/www/html
-RUN sudo chown -R apache:apache /var/www/html && sudo chmod -R 777 /var/www/html
 
 # Start the Apache server
 EXPOSE 80
