@@ -4,6 +4,9 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 MAINTAINER James Matsumura (jmatsumura@som.umaryland.edu)
 
+# Establish Apache user
+RUN sudo groupadd -r apache && useradd -r -g apache apache
+
 # Install Apache and git
 RUN sudo apt-get update && sudo apt-get install -y apache2 \
 							git \
@@ -31,7 +34,8 @@ RUN sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master
 RUN sudo git clone https://github.com/probonogeek/extjs.git /var/www/html/ext-4.1.1a
 
 # Let the webserver directory be shared with LGTview/TwinBLAST
-VOLUME ["/var/www/html"]
+VOLUME /var/www/html
+RUN sudo chown -R apache:apache /var/www/html && sudo chmod -R 777 /var/www/html
 
 # Start the Apache server
 EXPOSE 80

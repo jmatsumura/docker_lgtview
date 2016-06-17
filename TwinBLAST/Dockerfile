@@ -4,6 +4,9 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 MAINTAINER James Matsumura (jmatsumura@som.umaryland.edu)
 
+# Establish TwinBLAST user
+RUN sudo groupadd -r twinblast && useradd -r -g twinblast twinblast
+
 # Install Perl and base MySQL so that the perl libs that
 # depend on a MySQL presence are installed properly. This
 # may pose an issue later but for now, try keep separate containers
@@ -37,8 +40,6 @@ RUN cpanm --force CGI \
 # Get the TwinBLAST code
 RUN sudo git clone https://github.com/IGS/twinblast.git
 
-# Setup a volume mount that Apache can recognize
-RUN sudo mkdir -p /var/www/html
-RUN sudo mv /twinblast/www/* /var/www/html/.
-
-VOLUME ["/var/www/html"]
+VOLUME /twinblast/www
+RUN sudo chown -R twinblast:twinblast /twinblast/www 
+RUN sudo chmod -R 777 /twinblast/www
