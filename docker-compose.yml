@@ -9,8 +9,6 @@ services:
    - MySQL
   links:
    - MySQL
-  volumes_from:
-   - TwinBLAST
   ports:
    - 8080:80
   environment:
@@ -29,9 +27,3 @@ services:
    MYSQL_PASSWORD: twinblast
   expose: 
    - "3306"
-
- TwinBLAST:
-  build: ./TwinBLAST/.
-  image: twinblast:latest
-  volumes:
-   - "/twinblast/www"

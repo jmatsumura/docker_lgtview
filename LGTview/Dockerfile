@@ -56,10 +56,10 @@ RUN cpanm --force CGI \
     Bio::Root::Version \
     Bio::Graphics
 
-################
-
-# Arrange TwinBLAST in the web environment
+RUN sudo git clone https://github.com/IGS/twinblast.git
 RUN sudo mv /twinblast/www/html/* /var/www/html/. && sudo mv /twinblast/www/cgi /var/www
+
+################
 
 # Start the Apache server
 EXPOSE 80
