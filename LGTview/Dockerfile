@@ -18,6 +18,7 @@ RUN sudo mkdir /etc/apache2/conf.d \
 RUN sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/apache2.conf -O /etc/apache2/apache2.conf \
 		&& sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/twinblast.conf -O /etc/apache2/conf.d/twinblast.conf \
 		&& sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/curation_db.ini -O /var/www/html/conf/curation_db.ini
+		&& sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/mongo_config.ini -O /var/www/html/conf/mongo_config.ini
 
 # Place ExtJS library accessible to webserver
 RUN sudo git clone https://github.com/NewbridgeGreen/extjs.git /var/www/html/ext-4.1.0
