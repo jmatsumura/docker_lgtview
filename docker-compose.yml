@@ -2,9 +2,9 @@ version: '2'
 
 services: 
 
- Apache:
-  build: ./Apache/.
-  image: apache:latest
+ LGTview:
+  build: ./LGTview/.
+  image: lgtview:latest
   depends_on:
    - MySQL
    - mongo
@@ -30,11 +30,11 @@ services:
   expose: 
    - "3306"
 
-mongodata:
- image: mongo:2.6
- volumes:
-  - /data/db
- command: --break-mongo
+ mongodata:
+  image: mongo:2.6
+  volumes:
+   - /data/db
+  command: --break-mongo
 
  mongo:
   image: mongo:2.6
