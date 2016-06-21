@@ -12,6 +12,7 @@ RUN sudo apt-get update && sudo apt-get install -y apache2 \
 # Make the custom conf directory available to Apache
 RUN sudo mkdir /etc/apache2/conf.d \
 				/var/www/html/conf \
+				/var/www/cgi \
 				&& sudo mkdir -p /export/lgt/{files,indexes}
 
 # Get the pre-configured conf files
@@ -65,8 +66,8 @@ RUN cpanm --force CGI \
 	Cwd
 
 RUN sudo git clone https://github.com/jmatsumura/lgtview.git
-RUN sudo mv /lgtview/www/lgtview/html/* /var/www/html/. && sudo mv /lgtview/www/lgtview/cgi /var/www
-RUN sudo cp /lgtview/www/twinblast/html/* /var/www/html/. && sudo cp /lgtview/www/twinblast/cgi/* /var/www/cgi/.
+RUN sudo cp -r /lgtview/www/lgtview/html/* /var/www/html/. && sudo cp -r /lgtview/www/lgtview/cgi/* /var/www/cgi/.
+RUN sudo cp -r /lgtview/www/twinblast/html/* /var/www/html/. && sudo cp -r /lgtview/www/twinblast/cgi/* /var/www/cgi/.
 
 ################
 
