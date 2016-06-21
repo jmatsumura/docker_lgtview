@@ -17,7 +17,7 @@ RUN sudo mkdir /etc/apache2/conf.d \
 # Get the pre-configured conf files
 RUN sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/apache2.conf -O /etc/apache2/apache2.conf \
 		&& sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/twinblast.conf -O /etc/apache2/conf.d/twinblast.conf \
-		&& sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/curation_db.ini -O /var/www/html/conf/curation_db.ini
+		&& sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/curation_db.ini -O /var/www/html/conf/curation_db.ini \
 		&& sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/mongo_config.ini -O /var/www/html/conf/mongo_config.ini
 
 # Place ExtJS library accessible to webserver
@@ -41,7 +41,7 @@ RUN sudo apt-get update && sudo apt-get install -y perl \
                             libmysqlclient-dev \
                             cpanminus
 
-# Install necessary perl dependencies to run TwinBLAST
+# Install necessary perl dependencies to run TwinBLAST and LGTview
 RUN cpanm --force CGI \
     DBI \
     DBD::mysql \
@@ -55,10 +55,18 @@ RUN cpanm --force CGI \
     POSIX \
     IPC::Open3 \
     Bio::Root::Version \
-    Bio::Graphics
+    Bio::Graphics \ 
+	Data::Dumper \
+	MongoDB \
+	MongoDB::Code \
+	Getopt::Long \
+	File::Path \
+	base \
+	Cwd
 
-RUN sudo git clone https://github.com/IGS/twinblast.git
-RUN sudo mv /twinblast/www/html/* /var/www/html/. && sudo mv /twinblast/www/cgi /var/www
+RUN sudo git clone https://github.com/jmatsumura/lgtview.git
+RUN sudo mv /lgtview/www/lgtview/html/* /var/www/html/. && sudo mv /lgtview/www/lgtview/cgi /var/www
+RUN sudo cp /lgtview/www/twinblast/html/* /var/www/html/. && sudo cp /lgtview/www/twinblast/cgi/* /var/www/cgi/.
 
 ################
 
