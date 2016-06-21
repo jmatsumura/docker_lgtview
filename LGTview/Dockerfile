@@ -20,7 +20,7 @@ RUN sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master
 		&& sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/curation_db.ini -O /var/www/html/conf/curation_db.ini
 
 # Place ExtJS library accessible to webserver
-RUN sudo git clone https://github.com/probonogeek/extjs.git /var/www/html/ext-4.1.1a
+RUN sudo git clone https://github.com/NewbridgeGreen/extjs.git /var/www/html/ext-4.1.0
 
 # Next few sections will have a few images (each section will account 
 # for dependencies for a particular program).
