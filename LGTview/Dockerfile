@@ -63,12 +63,14 @@ RUN cpanm --force CGI \
 	Getopt::Long \
 	File::Path \
 	base \
-	Cwd
+	Cwd \ 
+	GiTaxon \
+	Pod::Usage
 
 RUN sudo git clone https://github.com/jmatsumura/lgtview.git
 RUN sudo cp -r /lgtview/www/lgtview/html/* /var/www/html/. && sudo cp -r /lgtview/www/lgtview/cgi/* /var/www/cgi/.
 RUN sudo cp -r /lgtview/www/twinblast/html/* /var/www/html/. && sudo cp -r /lgtview/www/twinblast/cgi/* /var/www/cgi/.
-RUN sudo perl /lgtview/bin/init_db.pl twinblast
+RUN sudo perl /lgtview/bin/init_db.pl
 
 ################
 
