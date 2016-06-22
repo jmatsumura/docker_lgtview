@@ -8,9 +8,6 @@ services:
   depends_on:
    - MySQL
    - mongo
-  links:
-   - MySQL
-   - mongo
   ports:
    - 8080:80
   environment:
