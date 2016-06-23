@@ -37,7 +37,6 @@ RUN sudo apt-get update && sudo apt-get install -y perl \
                             apt-utils \
                             gcc-multilib \
                             libgd-gd2-perl \
-#                            mysql-server \
                             libmysqlclient-dev \
                             cpanminus
 
@@ -69,7 +68,6 @@ RUN cpanm --force CGI \
 RUN sudo git clone https://github.com/jmatsumura/lgtview.git
 RUN sudo cp -r /lgtview/www/lgtview/html/* /var/www/html/. && sudo cp -r /lgtview/www/lgtview/cgi/* /var/www/html/cgi/.
 RUN sudo cp -r /lgtview/www/twinblast/html/* /var/www/html/. && sudo cp -r /lgtview/www/twinblast/cgi/* /var/www/html/cgi/.
-RUN sudo perl /lgtview/bin/init_db.pl localhost
 
 ################
 
