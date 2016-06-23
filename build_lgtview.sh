@@ -11,6 +11,16 @@
 #  - Houses the MySQL server
 docker-compose up -d
 
-# Now populate the MySQL database to prepare for
-# curation via TwinBLAST
+# Before attempting to interact with the containers, give them
+# a few seconds to truly initiate running and be accessible.
+sleep 10
+
+# Make sure the MySQL server can be reached
+UP=$(docker ps -a | grep 'mysql' | grep 'Up' | wc -l);
+while [ "$UP" -ne 1 ]; do
+	UP=$(docker ps -a | grep 'mysql' | grep 'Up' | wc -l);
+	sleep 5
+done
+
+# Now populate the MySQL database to prepare for curation via TwinBLAST
 docker exec -it dockerlgtview_LGTview_1 perl /lgtview/bin/init_db.pl
