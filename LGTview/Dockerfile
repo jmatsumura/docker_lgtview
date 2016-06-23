@@ -6,6 +6,7 @@ MAINTAINER James Matsumura (jmatsumura@som.umaryland.edu)
 
 # Install Apache and git
 RUN sudo apt-get update && sudo apt-get install -y apache2 \
+							apache2-utils \
 							git \
 							wget
 
