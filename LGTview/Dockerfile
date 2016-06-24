@@ -23,7 +23,7 @@ RUN sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master
 		&& sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/mongo_config.ini -O /var/www/html/conf/mongo_config.ini
 
 # Place ExtJS library accessible to webserver
-#RUN sudo git clone https://github.com/NewbridgeGreen/extjs.git /var/www/html/ext-4.1.0
+RUN sudo git clone https://github.com/NewbridgeGreen/extjs.git /var/www/html/ext-4.1.0
 
 # Next few sections will have a few images (each section will account 
 # for dependencies for a particular program).
@@ -69,9 +69,9 @@ RUN sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master
 #	Cwd \ 
 #	Pod::Usage
 
-#RUN sudo git clone https://github.com/jmatsumura/lgtview.git
-#RUN sudo cp -r /lgtview/www/lgtview/html/* /var/www/html/. && sudo cp -r /lgtview/www/lgtview/cgi/* /var/www/html/cgi/.
-#RUN sudo cp -r /lgtview/www/twinblast/html/* /var/www/html/. && sudo cp -r /lgtview/www/twinblast/cgi/* /var/www/html/cgi/.
+RUN sudo git clone https://github.com/jmatsumura/lgtview.git
+RUN sudo cp -r /lgtview/www/lgtview/html/* /var/www/html/. && sudo cp -r /lgtview/www/lgtview/cgi/* /var/www/html/cgi/.
+RUN sudo cp -r /lgtview/www/twinblast/html/* /var/www/html/. && sudo cp -r /lgtview/www/twinblast/cgi/* /var/www/html/cgi/.
 
 ################
 
