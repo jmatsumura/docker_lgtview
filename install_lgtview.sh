@@ -69,15 +69,14 @@ if [ "$response" = 'yes' ]; then
 	docker exec -it dockerlgtview_LGTview_1 htpasswd -cb /etc/apache2/.htpasswd "$username" "$password_confirm"
 
 	# Now configure the necessary Apache confs to accommodate this protected setup.
-	docker exec -it dockerlgtview_LGTview_1 sed -i '178s/None/All/' /etc/apache2/apache2.conf
+	docker exec -it dockerlgtview_LGTview_1 sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 	# Just in case the installer has failed, clear the file and start anew
 	rm ./.htaccess
 	printf '%s\n%s\n%s\n%s' 'AuthType Basic' 'AuthName "Restricted Content"' 'AuthUserFile /etc/apache2/.htpasswd' 'Require valid-user' >> ./.htaccess
 	docker cp ./.htaccess dockerlgtview_LGTview_1:/var/www/html/.htaccess
 
 	# Restart the Apache container with this new configuration
-	docker kill --signal="USR1" dockerlgtview_LGTview_1
-
+	docker exec -it dockerlgtview_LGTview_1 /etc/init.d/apache2 reload
 	echo "Login requirement added. Please be sure to save this information somewhere so that you do not lose access to the site."
 fi
 
@@ -86,7 +85,7 @@ echo -e "-----------------------------------------------------------------------
 # Can't think of a reason a user would not want https so just add
 # it in as default instead of prompting for it. 
 docker exec -it dockerlgtview_LGTview_1 a2enmod ssl
-docker kill --signal="USR1" dockerlgtview_LGTview_1
+docker exec -it dockerlgtview_LGTview_1 /etc/init.d/apache2 reload
 
 echo -e "\n----------------------------------------------------------------------------------------------------"
 # Interact with the user to setup SSL
@@ -101,8 +100,10 @@ echo -ne "Organization Name (eg, company) [University of Maryland]: "
 read organization
 echo -ne "Organizational Unit Name (eg, section) [Institute for Genome Sciences]: "
 read division
-docker exec -it dockerlgtview_LGTview_1 openssl req -x509 -nodes -days 1460 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.crt \
-	-subj "/C=$country/ST=$statei/L=$city/O=$organization/OU=$division/CN=172.18.0.1:8080"
+echo -ne "Email for setup contact [the_best_email@domain.com]: "
+read email
+docker exec -it dockerlgtview_LGTview_1 openssl req -x509 -nodes -days 1460 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt \
+	-subj "/C=$country/ST=$statei/L=$city/O=$organization/OU=$division/CN=127.0.1.1"
 
 # Modify the confs to use the newly generated SSL cert+key
 docker exec -it dockerlgtview_LGTview_1 sed -i '32s@/etc/ssl/certs/ssl-cert-snakeoil.pem@/etc/apache2/ssl/apache.crt@' /etc/apache2/sites-available/default-ssl.conf
@@ -113,7 +114,7 @@ docker exec -it dockerlgtview_LGTview_1 sed -i "4a\\\t\tServerAlias localhost:80
 
 # Set this new SSL conf and restart Apache one last time. SSL should now be enabled
 docker exec -it dockerlgtview_LGTview_1 a2ensite default-ssl.conf
-docker kill --signal="USR1" dockerlgtview_LGTview_1
+docker exec -it dockerlgtview_LGTview_1 /etc/init.d/apache2 reload
 echo -ne "SSL now implemented (access site through https)."
 echo -e "\n----------------------------------------------------------------------------------------------------"
 
