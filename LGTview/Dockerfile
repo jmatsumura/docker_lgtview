@@ -8,10 +8,11 @@ MAINTAINER James Matsumura (jmatsumura@som.umaryland.edu)
 RUN sudo apt-get update && sudo apt-get install -y apache2 \
 							apache2-utils \
 							git \
-							wget
+							wget \
+							openssl 
 
-# Make the custom conf directory available to Apache
-RUN sudo mkdir /etc/apache2/conf.d \
+# Make the custom conf/ssl directories available to Apache
+RUN sudo mkdir /etc/apache2/{conf.d,ssl} \
 				/var/www/html/{conf,cgi} \
 				&& sudo mkdir -p /export/lgt/{files,indexes}
 
@@ -22,7 +23,7 @@ RUN sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master
 		&& sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/mongo_config.ini -O /var/www/html/conf/mongo_config.ini
 
 # Place ExtJS library accessible to webserver
-RUN sudo git clone https://github.com/NewbridgeGreen/extjs.git /var/www/html/ext-4.1.0
+#RUN sudo git clone https://github.com/NewbridgeGreen/extjs.git /var/www/html/ext-4.1.0
 
 # Next few sections will have a few images (each section will account 
 # for dependencies for a particular program).
@@ -33,45 +34,47 @@ RUN sudo git clone https://github.com/NewbridgeGreen/extjs.git /var/www/html/ext
 # depend on a MySQL presence are installed properly. This
 # may pose an issue later but for now, try keep separate containers
 # for this and for MySQL.
-RUN sudo apt-get update && sudo apt-get install -y perl \
-                            build-essential \
-                            apt-utils \
-                            gcc-multilib \
-                            libgd-gd2-perl \
-                            libmysqlclient-dev \
-                            cpanminus
+#RUN sudo apt-get update && sudo apt-get install -y perl \
+#                            build-essential \
+#                            apt-utils \
+#                            gcc-multilib \
+#                            libgd-gd2-perl \
+#                            libmysqlclient-dev \
+#                            cpanminus
 
 # Install necessary perl dependencies to run TwinBLAST and LGTview
-RUN cpanm --force CGI \
-    DBI \
-    DBD::mysql \
-    File::Slurp \
-    Tie::File \
-    File::Basename \
-    Digest::MD5 \
-    URI::Escape \
-    JSON \
-    Config::IniFiles \
-    POSIX \
-    IPC::Open3 \
-    Bio::Root::Version \
-    Bio::Graphics \ 
-	Data::Dumper \
-	MongoDB \
-	MongoDB::Code \
-	Getopt::Long \
-	File::Path \
-	base \
-	Cwd \ 
-#	GiTaxon \
-	Pod::Usage
+#RUN cpanm --force CGI \
+#    DBI \
+#    DBD::mysql \
+#    File::Slurp \
+#    File::Find \
+#    Tie::File \
+#    File::Basename \
+#    Digest::MD5 \
+#    URI::Escape \
+#    JSON \
+#    Config::IniFiles \
+#    POSIX \
+#    IPC::Open3 \
+#    Bio::Root::Version \
+#    Bio::Graphics \ 
+#    Bio::DB::Taxonomy \ 
+#    Bio::DB::EUtilities \ 
+#	Data::Dumper \
+#	MongoDB \
+#	MongoDB::Code \
+#	Getopt::Long \
+#	File::Path \
+#	base \
+#	Cwd \ 
+#	Pod::Usage
 
-RUN sudo git clone https://github.com/jmatsumura/lgtview.git
-RUN sudo cp -r /lgtview/www/lgtview/html/* /var/www/html/. && sudo cp -r /lgtview/www/lgtview/cgi/* /var/www/html/cgi/.
-RUN sudo cp -r /lgtview/www/twinblast/html/* /var/www/html/. && sudo cp -r /lgtview/www/twinblast/cgi/* /var/www/html/cgi/.
+#RUN sudo git clone https://github.com/jmatsumura/lgtview.git
+#RUN sudo cp -r /lgtview/www/lgtview/html/* /var/www/html/. && sudo cp -r /lgtview/www/lgtview/cgi/* /var/www/html/cgi/.
+#RUN sudo cp -r /lgtview/www/twinblast/html/* /var/www/html/. && sudo cp -r /lgtview/www/twinblast/cgi/* /var/www/html/cgi/.
 
 ################
 
 # Start the Apache server
 EXPOSE 80
-CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+CMD ["/usr/sbin/apache2ctl", "-DFOREGROUND"]
