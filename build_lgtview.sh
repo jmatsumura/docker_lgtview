@@ -63,12 +63,12 @@ if [ "$response" = 'yes' ]; then
 
 	# Go into the Apache container and configure for passwords. Here, respond to the
 	# two interactive prompts using the supplied passwords.
-	docker exec -it dockerlgtview_LGTview_1 (printf '%s\n%s' "$password_confirm" "$password_confirm" && cat) \
-		 | sudo htpasswd -c /etc/apache2/.htpasswd "$username"
+	docker exec -it dockerlgtview_LGTview_1 printf '%s\n%s' "$password_confirm" "$password_confirm" && cat \
+		 | htpasswd -c /etc/apache2/.htpasswd "$username"
 
 	# Now configure the necessary Apache confs to accommodate this protected setup.
-	docker exec -it dockerlgtview_LGTview_1 sudo sed -i '178s/None/All/' /etc/apache2/apache2.conf
-	docker exec -it dockerlgtview_LGTview_1 sudo printf '%s\n%s\n%s\n%s' \
+	docker exec -it dockerlgtview_LGTview_1 sed -i '178s/None/All/' /etc/apache2/apache2.conf
+	docker exec -it dockerlgtview_LGTview_1 printf '%s\n%s\n%s\n%s' \
 		'AuthType Basic' \
 		'AuthName "Restricted Content"' \
 		'AuthUserFile /etc/apache2/.htpasswd' \
@@ -83,9 +83,11 @@ fi
 
 # Can't think of a reason a user would not want https so just add
 # it in as default instead of prompting for it. 
-docker exec -it dockerlgtview_LGTview_1 sudo a2enmod ssl
+docker exec -it dockerlgtview_LGTview_1 a2enmod ssl
 docker kill -signal="USR1" dockerlgtview_LGTview_1
-docker exec -it dockerlgtview_LGTview_1 sudo mkdir /etc/apache2/ssl
+docker exec -it dockerlgtview_LGTview_1 mkdir /etc/apache2/ssl
+
+# Interact with the user to setup SSL
 echo "Please answer the following in order to setup SSL (https) for the site."
 echo -ne "\nCountry Name (2 letter code) [US]: "
 read country
@@ -107,15 +109,17 @@ docker exec -it dockerlgtview_LGTview_1 printf '\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n' 
 	"$division" \
 	"172.18.0.1:8080" \
 	"$email" \
-	&& cat | sudo openssl req -x509 -nodes -days 1460 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.crt
+	&& cat | openssl req -x509 -nodes -days 1460 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.crt
 
-docker exec -it dockerlgtview_LGTview_1 sudo sed -i '32s@/etc/ssl/certs/ssl-cert-snakeoil.pem@/etc/apache2/ssl/apache.crt@' /etc/apache2/sites-available/default-ssl.conf
-docker exec -it dockerlgtview_LGTview_1 sudo sed -i '33s@/etc/ssl/private/ssl-cert-snakeoil.key@/etc/apache2/ssl/apache.key@' /etc/apache2/sites-available/default-ssl.conf
-docker exec -it dockerlgtview_LGTview_1 sudo sed -i "3s/webmaster@localhost/$email/" /etc/apache2/sites-available/default-ssl.conf
-docker exec -it dockerlgtview_LGTview_1 sudo sed -i "3a\n\t\tServerName 172.18.0.1:8080" /etc/apache2/sites-available/default-ssl.conf
-docker exec -it dockerlgtview_LGTview_1 sudo sed -i "4a\n\t\tServerAlias localhost:8080" /etc/apache2/sites-available/default-ssl.conf
+# Modify the confs to use the newly generated SSL cert+key
+docker exec -it dockerlgtview_LGTview_1 sed -i '32s@/etc/ssl/certs/ssl-cert-snakeoil.pem@/etc/apache2/ssl/apache.crt@' /etc/apache2/sites-available/default-ssl.conf
+docker exec -it dockerlgtview_LGTview_1 sed -i '33s@/etc/ssl/private/ssl-cert-snakeoil.key@/etc/apache2/ssl/apache.key@' /etc/apache2/sites-available/default-ssl.conf
+docker exec -it dockerlgtview_LGTview_1 sed -i "3s/webmaster@localhost/$email/" /etc/apache2/sites-available/default-ssl.conf
+docker exec -it dockerlgtview_LGTview_1 sed -i "3a\n\t\tServerName 172.18.0.1:8080" /etc/apache2/sites-available/default-ssl.conf
+docker exec -it dockerlgtview_LGTview_1 sed -i "4a\n\t\tServerAlias localhost:8080" /etc/apache2/sites-available/default-ssl.conf
 
-docker exec -it dockerlgtview_LGTview_1 sudo a2ensite default-ssl.conf
+# Set this new SSL conf and restart Apache one last time. SSL should now be enabled
+docker exec -it dockerlgtview_LGTview_1 a2ensite default-ssl.conf
 docker kill -signal="USR1" dockerlgtview_LGTview_1
 
 # Make sure the MySQL server container is up and running
