@@ -12,9 +12,13 @@ RUN sudo apt-get update && sudo apt-get install -y apache2 \
 							openssl 
 
 # Make the custom conf/ssl directories available to Apache
-RUN sudo mkdir /etc/apache2/{conf.d,ssl} \
+RUN sudo mkdir /etc/apache2/{conf.d,ssl,conf-available} \
 				/var/www/html/{conf,cgi} \
 				&& sudo mkdir -p /export/lgt/{files,indexes}
+
+# Add in FQDN for ssl
+RUN sudo echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/fqdn.conf
+RUN sudo a2enconf fqdn
 
 # Get the pre-configured conf files
 RUN sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master/misc/apache2.conf -O /etc/apache2/apache2.conf \
@@ -69,6 +73,7 @@ RUN sudo git clone https://github.com/NewbridgeGreen/extjs.git /var/www/html/ext
 #	Cwd \ 
 #	Pod::Usage
 
+RUN sudo a2enmod ssl
 RUN sudo git clone https://github.com/jmatsumura/lgtview.git
 RUN sudo cp -r /lgtview/www/lgtview/html/* /var/www/html/. && sudo cp -r /lgtview/www/lgtview/cgi/* /var/www/html/cgi/.
 RUN sudo cp -r /lgtview/www/twinblast/html/* /var/www/html/. && sudo cp -r /lgtview/www/twinblast/cgi/* /var/www/html/cgi/.
