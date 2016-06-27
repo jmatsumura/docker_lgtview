@@ -82,9 +82,7 @@ fi
 
 echo -e "----------------------------------------------------------------------------------------------------"
 docker exec -it dockerlgtview_LGTview_1 sed -i '8s@443@443 https@' /etc/apache2/ports.conf
-docker kill --signal="USR1" dockerlgtview_LGTview_1 /etc/init.d/apache2
-#docker exec -it dockerlgtview_LGTview_1 a2enmod ssl
-#docker exec -it dockerlgtview_LGTview_1 /etc/init.d/apache2 reload
+docker exec -it dockerlgtview_LGTview_1 /etc/init.d/apache2 reload
 
 # Can't think of a reason a user would not want https so just add
 # it in as default instead of prompting for it. 
@@ -109,7 +107,7 @@ docker exec -it dockerlgtview_LGTview_1 openssl req -x509 -nodes -days 1460 -new
 docker exec -it dockerlgtview_LGTview_1 sed -i '32s@/etc/ssl/certs/ssl-cert-snakeoil.pem@/etc/apache2/ssl/apache.crt@' /etc/apache2/sites-available/default-ssl.conf
 docker exec -it dockerlgtview_LGTview_1 sed -i '33s@/etc/ssl/private/ssl-cert-snakeoil.key@/etc/apache2/ssl/apache.key@' /etc/apache2/sites-available/default-ssl.conf
 docker exec -it dockerlgtview_LGTview_1 sed -i "3s/webmaster@localhost/$email/" /etc/apache2/sites-available/default-ssl.conf
-docker exec -it dockerlgtview_LGTview_1 sed -i "2a/_default_/*/" /etc/apache2/sites-available/default-ssl.conf
+docker exec -it dockerlgtview_LGTview_1 sed -i "2s/_default_/*/" /etc/apache2/sites-available/default-ssl.conf
 docker exec -it dockerlgtview_LGTview_1 sed -i "3a\\\t\tServerName localhost" /etc/apache2/sites-available/default-ssl.conf
 docker exec -it dockerlgtview_LGTview_1 sed -i "4a\\\t\tServerAlias lgtview" /etc/apache2/sites-available/default-ssl.conf
 
