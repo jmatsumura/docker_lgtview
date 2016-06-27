@@ -72,7 +72,7 @@ if [ "$response" = 'yes' ]; then
 	docker exec -it dockerlgtview_LGTview_1 sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 	# Just in case the installer has failed, clear the file and start anew
 	rm ./.htaccess
-	printf '%s\n%s\n%s\n%s\n%s\n%s\n%s' 'AuthType Basic' 'AuthName "Restricted Content"' 'AuthUserFile /etc/apache2/.htpasswd' 'Require valid-user' 'RewriteEngine On' 'RewriteBase /' 'RewriteRule "localhost" "https:localhost"' >> ./.htaccess
+	printf '%s\n%s\n%s\n%s' 'AuthType Basic' 'AuthName "Restricted Content"' 'AuthUserFile /etc/apache2/.htpasswd' 'Require valid-user' >> ./.htaccess
 	docker cp ./.htaccess dockerlgtview_LGTview_1:/var/www/html/.htaccess
 
 	# Restart the Apache container with this new configuration
@@ -82,6 +82,7 @@ fi
 
 echo -e "----------------------------------------------------------------------------------------------------"
 docker exec -it dockerlgtview_LGTview_1 sed -i '8s@443@443 https@' /etc/apache2/ports.conf
+docker exec -it dockerlgtview_LGTview_1 sed -i '5s@Listen 80@#Listen 80@' /etc/apache2/ports.conf
 docker exec -it dockerlgtview_LGTview_1 /etc/init.d/apache2 reload
 
 # Can't think of a reason a user would not want https so just add
