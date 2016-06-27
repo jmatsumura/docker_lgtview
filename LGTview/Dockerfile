@@ -12,12 +12,12 @@ RUN sudo apt-get update && sudo apt-get install -y apache2 \
 							openssl 
 
 # Make the custom conf/ssl directories available to Apache
-RUN sudo mkdir /etc/apache2/{conf.d,ssl,conf-available} \
+RUN sudo mkdir /etc/apache2/{conf.d,ssl} \
 				/var/www/html/{conf,cgi} \
 				&& sudo mkdir -p /export/lgt/{files,indexes}
 
 # Add in FQDN for ssl
-RUN sudo echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/fqdn.conf
+RUN sudo echo "ServerName lgtview.com" | sudo tee /etc/apache2/conf-available/fqdn.conf
 RUN sudo a2enconf fqdn
 
 # Get the pre-configured conf files
