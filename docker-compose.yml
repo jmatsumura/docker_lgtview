@@ -12,7 +12,7 @@ services:
    - MySQL
    - mongo
   ports:
-   - 8080:80
+   - 443:443
   restart: always
   environment:
    TWINBLAST_DB_HOST: MySQL:3306
