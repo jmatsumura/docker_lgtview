@@ -81,6 +81,7 @@ if [ "$response" = 'yes' ]; then
 fi
 
 echo -e "----------------------------------------------------------------------------------------------------"
+docker exec -it dockerlgtview_LGTview_1 sed -i '8s@443@443 https@' /etc/apache2/ports.conf
 docker kill --signal="USR1" dockerlgtview_LGTview_1 /etc/init.d/apache2
 #docker exec -it dockerlgtview_LGTview_1 a2enmod ssl
 #docker exec -it dockerlgtview_LGTview_1 /etc/init.d/apache2 reload
