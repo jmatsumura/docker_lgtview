@@ -107,7 +107,7 @@ docker exec -it dockerlgtview_LGTview_1 openssl req -x509 -nodes -days 1460 -new
 docker exec -it dockerlgtview_LGTview_1 sed -i '32s@/etc/ssl/certs/ssl-cert-snakeoil.pem@/etc/apache2/ssl/apache.crt@' /etc/apache2/sites-available/default-ssl.conf
 docker exec -it dockerlgtview_LGTview_1 sed -i '33s@/etc/ssl/private/ssl-cert-snakeoil.key@/etc/apache2/ssl/apache.key@' /etc/apache2/sites-available/default-ssl.conf
 docker exec -it dockerlgtview_LGTview_1 sed -i "3s/webmaster@localhost/$email/" /etc/apache2/sites-available/default-ssl.conf
-docker exec -it dockerlgtview_LGTview_1 sed -i "2s/_default_/*/" /etc/apache2/sites-available/default-ssl.conf
+#docker exec -it dockerlgtview_LGTview_1 sed -i "2s/_default_/*/" /etc/apache2/sites-available/default-ssl.conf
 docker exec -it dockerlgtview_LGTview_1 sed -i "3a\\\t\tServerName localhost" /etc/apache2/sites-available/default-ssl.conf
 docker exec -it dockerlgtview_LGTview_1 sed -i "4a\\\t\tServerAlias lgtview" /etc/apache2/sites-available/default-ssl.conf
 
