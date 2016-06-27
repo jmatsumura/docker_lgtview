@@ -14,10 +14,11 @@ RUN sudo apt-get update && sudo apt-get install -y apache2 \
 # Make the custom conf/ssl directories available to Apache
 RUN sudo mkdir /etc/apache2/{conf.d,ssl} \
 				/var/www/html/{conf,cgi} \
+				/var/www/notreal \
 				&& sudo mkdir -p /export/lgt/{files,indexes}
 
 # Add in FQDN for ssl
-RUN sudo echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/fqdn.conf
+RUN sudo echo "ServerName lgtview" | sudo tee /etc/apache2/conf-available/fqdn.conf
 RUN sudo a2enconf fqdn
 
 # Get the pre-configured conf files
@@ -44,7 +45,8 @@ RUN sudo git clone https://github.com/NewbridgeGreen/extjs.git /var/www/html/ext
 #                            gcc-multilib \
 #                            libgd-gd2-perl \
 #                            libmysqlclient-dev \
-#                            cpanminus
+#                            cpanminus \
+#							 bioperl
 
 # Install necessary perl dependencies to run TwinBLAST and LGTview
 #RUN cpanm --force CGI \
@@ -81,6 +83,5 @@ RUN sudo cp -r /lgtview/www/twinblast/html/* /var/www/html/. && sudo cp -r /lgtv
 ################
 
 # Start the Apache server
-EXPOSE 80
-EXPOSE 443
+EXPOSE 80 443
 CMD ["/usr/sbin/apache2ctl", "-DFOREGROUND"]
