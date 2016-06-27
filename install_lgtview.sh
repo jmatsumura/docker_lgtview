@@ -102,14 +102,14 @@ echo -ne "Email for setup contact [the_best_email@domain.com]: "
 read email
 docker exec -it dockerlgtview_LGTview_1 openssl req -x509 -nodes -days 1460 -newkey rsa:2048 \
 	-keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt \
-	-subj "/C=$country/ST=$statei/L=$city/O=$organization/OU=$division/CA=TRUE/CN=lgtview.com"
+	-subj "/C=$country/ST=$statei/L=$city/O=$organization/OU=$division/CA=TRUE/CN=localhost"
 
 # Modify the confs to use the newly generated SSL cert+key
 docker exec -it dockerlgtview_LGTview_1 sed -i '32s@/etc/ssl/certs/ssl-cert-snakeoil.pem@/etc/apache2/ssl/apache.crt@' /etc/apache2/sites-available/default-ssl.conf
 docker exec -it dockerlgtview_LGTview_1 sed -i '33s@/etc/ssl/private/ssl-cert-snakeoil.key@/etc/apache2/ssl/apache.key@' /etc/apache2/sites-available/default-ssl.conf
 docker exec -it dockerlgtview_LGTview_1 sed -i "3s/webmaster@localhost/$email/" /etc/apache2/sites-available/default-ssl.conf
-docker exec -it dockerlgtview_LGTview_1 sed -i "3a\\\t\tServerName lgtview:443" /etc/apache2/sites-available/default-ssl.conf
-docker exec -it dockerlgtview_LGTview_1 sed -i "4a\\\t\tServerAlias localhost" /etc/apache2/sites-available/default-ssl.conf
+docker exec -it dockerlgtview_LGTview_1 sed -i "3a\\\t\tServerName localhost:443" /etc/apache2/sites-available/default-ssl.conf
+docker exec -it dockerlgtview_LGTview_1 sed -i "4a\\\t\tServerAlias lgtview" /etc/apache2/sites-available/default-ssl.conf
 
 # Set this new SSL conf and restart Apache one last time. SSL should now be enabled
 docker exec -it dockerlgtview_LGTview_1 a2ensite default-ssl.conf

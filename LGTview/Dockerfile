@@ -17,7 +17,7 @@ RUN sudo mkdir /etc/apache2/{conf.d,ssl} \
 				&& sudo mkdir -p /export/lgt/{files,indexes}
 
 # Add in FQDN for ssl
-RUN sudo echo "ServerName lgtview" | sudo tee /etc/apache2/conf-available/fqdn.conf
+RUN sudo echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/fqdn.conf
 RUN sudo a2enconf fqdn
 
 # Get the pre-configured conf files
