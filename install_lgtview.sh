@@ -72,7 +72,7 @@ if [ "$response" = 'yes' ]; then
 	docker exec -it dockerlgtview_LGTview_1 sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 	# Just in case the installer has failed, clear the file and start anew
 	rm ./.htaccess
-	printf '%s\n%s\n%s\n%s' 'AuthType Basic' 'AuthName "Restricted Content"' 'AuthUserFile /etc/apache2/.htpasswd' 'Require valid-user' >> ./.htaccess
+	printf '%s\n%s\n%s\n%s\n%s\n%s\n%s' 'AuthType Basic' 'AuthName "Restricted Content"' 'AuthUserFile /etc/apache2/.htpasswd' 'Require valid-user' 'RewriteEngine On' 'RewriteBase /' 'RewriteRule "localhost" "https:localhost"' >> ./.htaccess
 	docker cp ./.htaccess dockerlgtview_LGTview_1:/var/www/html/.htaccess
 
 	# Restart the Apache container with this new configuration
