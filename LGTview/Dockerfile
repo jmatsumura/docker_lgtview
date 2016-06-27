@@ -82,5 +82,5 @@ RUN sudo cp -r /lgtview/www/twinblast/html/* /var/www/html/. && sudo cp -r /lgtv
 
 # Start the Apache server
 EXPOSE 80
-#EXPOSE 443
+EXPOSE 443
 CMD ["/usr/sbin/apache2ctl", "-DFOREGROUND"]
