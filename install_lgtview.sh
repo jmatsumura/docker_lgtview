@@ -126,7 +126,7 @@ while [ "$UP" -ne 1 ]; do
 done
 
 # Now populate the MySQL database to prepare for curation via TwinBLAST
-#docker exec -it dockerlgtview_LGTview_1 perl /lgtview/bin/init_db.pl
+docker exec -it dockerlgtview_LGTview_1 perl /lgtview/bin/init_db.pl
 
 # Make sure the MongoDB server container is up and running
 UP1=$(docker ps -a | grep 'mongo:2.6' | grep 'Up' | wc -l);

@@ -29,50 +29,47 @@ RUN sudo wget https://raw.githubusercontent.com/jmatsumura/docker_lgtview/master
 # Place ExtJS library accessible to webserver
 RUN sudo git clone https://github.com/NewbridgeGreen/extjs.git /var/www/html/ext-4.1.0
 
-# Next few sections will have a few images (each section will account 
-# for dependencies for a particular program).
-
-### TwinBLAST ###
+# Next section will obtain all the dependencies for LGTview / TwinBLAST functionality. 
 
 # Install Perl and base MySQL so that the perl libs that
 # depend on a MySQL presence are installed properly. This
 # may pose an issue later but for now, try keep separate containers
 # for this and for MySQL.
-#RUN sudo apt-get update && sudo apt-get install -y perl \
-#                            build-essential \
-#                            apt-utils \
-#                            gcc-multilib \
-#                            libgd-gd2-perl \
-#                            libmysqlclient-dev \
-#                            cpanminus \
-#							 bioperl
+RUN sudo apt-get update && sudo apt-get install -y perl \
+                            build-essential \
+                            apt-utils \
+                            gcc-multilib \
+                            libgd-gd2-perl \
+                            libmysqlclient-dev \
+                            cpanminus \
+							bioperl
 
 # Install necessary perl dependencies to run TwinBLAST and LGTview
-#RUN cpanm --force CGI \
-#    DBI \
-#    DBD::mysql \
-#    File::Slurp \
-#    File::Find \
-#    Tie::File \
-#    File::Basename \
-#    Digest::MD5 \
-#    URI::Escape \
-#    JSON \
-#    Config::IniFiles \
-#    POSIX \
-#    IPC::Open3 \
-#    Bio::Root::Version \
-#    Bio::Graphics \ 
-#    Bio::DB::Taxonomy \ 
-#    Bio::DB::EUtilities \ 
-#	Data::Dumper \
-#	MongoDB \
-#	MongoDB::Code \
-#	Getopt::Long \
-#	File::Path \
-#	base \
-#	Cwd \ 
-#	Pod::Usage
+RUN cpanm --force CGI \
+    DBI \
+    DBD::mysql \
+    File::Slurp \
+    File::Find \
+	File::Path \
+    File::Basename \
+    Tie::File \
+    Digest::MD5 \
+    URI::Escape \
+    JSON \
+    Config::IniFiles \
+    POSIX \
+    IPC::Open3 \
+    Bio::Root::Version \
+    Bio::Graphics \ 
+    Bio::DB::Taxonomy \ 
+    Bio::DB::EUtilities \ 
+	Data::Dumper \
+	MongoDB \
+	MongoDB::Code \
+	Getopt::Long \
+	base \
+	Cwd \ 
+	Pod::Usage
 
 # Enable modules for SSL and redirection
 RUN sudo a2enmod ssl
