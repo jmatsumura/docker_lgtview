@@ -49,4 +49,4 @@ services:
    - mongodata
   ports:
    - "27017:27017"
-  command: --smallfiles --rest --auth
+  command: --smallfiles --rest
