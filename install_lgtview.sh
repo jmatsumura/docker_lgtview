@@ -26,6 +26,22 @@ if [ "$response" = 'yes' ]; then
 fi
 echo "----------------------------------------------------------------------------------------------------"
 
+# At this point need to download a few files that are going to be mounted via
+# docker-compose so that MongoDB can be initiated with the necessary taxonomy data
+echo "Downloading necessary taxonomy files for LGTview......"
+if [ -d "/home/lgtview/files_for_mongo" ]; then
+	mkdir -p /home/lgtview/files_for_mongo
+fi
+#if [ ! -f "/home/lgtview/files_for_mongo/gi_taxid_nucl.dmp*" ]; then
+#	wget gi_taxid_nucl.dmp.gz -O /home/lgtview/files_for_mongo/.
+#fi
+#if [ ! -f "/home/lgtview/files_for_mongo/names.dmp*" ]; then
+#	wget names.dmp.gz -O /home/lgtview/files_for_mongo/.
+#fi
+#if [ ! -f "/home/lgtview/files_for_mongo/nodes.dmp*" ]; then
+#	wget nodes.dmp.gz -O /home/lgtview/files_for_mongo/.
+#fi
+echo "----------------------------------------------------------------------------------------------------"
 echo "Going to build and run the Docker containers now......"
 
 # Now, establish the following Docker containers:
