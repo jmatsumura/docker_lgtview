@@ -41,6 +41,7 @@ fi
 #if [ ! -f "/home/lgtview/files_for_mongo/nodes.dmp*" ]; then
 #	wget nodes.dmp.gz -O /home/lgtview/files_for_mongo/.
 #fi
+#
 echo "----------------------------------------------------------------------------------------------------"
 echo "Going to build and run the Docker containers now......"
 
@@ -153,4 +154,5 @@ done
 
 # Now initialize MongoDB. Need the dump taken from revan in order to accommodate
 # the necessary taxonomic assignments. 
-#docker exec -it dockerlgtview_LGTview_1 perl /lgtview/bin/init_mongodb.pl
+docker exec -it dockerlgtview_LGTview_1 gunzip /home/lgtview_files_for_mongo/*
+docker exec -it dockerlgtview_LGTview_1 perl /lgtview/bin/load_mongo_gi2taxon.pl
