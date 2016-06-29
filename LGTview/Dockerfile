@@ -64,6 +64,7 @@ RUN cpanm --force CGI \
     Bio::DB::Taxonomy \ 
     Bio::DB::EUtilities \ 
 	Data::Dumper \
+	Time::SoFar \
 	MongoDB \
 	MongoDB::Code \
 	Getopt::Long \
