@@ -32,14 +32,18 @@ echo "Downloading necessary taxonomy files for LGTview......"
 if [ -d "/home/lgtview/files_for_mongo" ]; then
 	mkdir -p /home/lgtview/files_for_mongo
 fi
+# If they don't have these files, download and uncompress
 #if [ ! -f "/home/lgtview/files_for_mongo/gi_taxid_nucl.dmp*" ]; then
 #	wget gi_taxid_nucl.dmp.gz -O /home/lgtview/files_for_mongo/.
+#	docker exec -it dockerlgtview_LGTview_1 gunzip /home/lgtview_files_for_mongo/gi_taxid_nucl.dmp
 #fi
 #if [ ! -f "/home/lgtview/files_for_mongo/names.dmp*" ]; then
 #	wget names.dmp.gz -O /home/lgtview/files_for_mongo/.
+#	docker exec -it dockerlgtview_LGTview_1 gunzip /home/lgtview_files_for_mongo/names.dmp
 #fi
 #if [ ! -f "/home/lgtview/files_for_mongo/nodes.dmp*" ]; then
 #	wget nodes.dmp.gz -O /home/lgtview/files_for_mongo/.
+#	docker exec -it dockerlgtview_LGTview_1 gunzip /home/lgtview_files_for_mongo/nodes.dmp
 #fi
 #
 echo "----------------------------------------------------------------------------------------------------"
@@ -154,5 +158,4 @@ done
 
 # Now initialize MongoDB. Need the dump taken from revan in order to accommodate
 # the necessary taxonomic assignments. 
-docker exec -it dockerlgtview_LGTview_1 gunzip /home/lgtview_files_for_mongo/*
 docker exec -it dockerlgtview_LGTview_1 perl /lgtview/bin/load_mongo_gi2taxon.pl
