@@ -158,4 +158,4 @@ done
 
 # Now initialize MongoDB. Need the dump taken from revan in order to accommodate
 # the necessary taxonomic assignments. 
-docker exec -it dockerlgtview_LGTview_1 perl /lgtview/bin/load_mongo_gi2taxon.pl
+#docker exec -it dockerlgtview_LGTview_1 perl /lgtview/bin/load_mongo_gi2taxon.pl
