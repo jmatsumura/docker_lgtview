@@ -13,6 +13,7 @@ services:
    - mongo
   ports:
    - 443:443
+   - 8080:80
   restart: always
   volumes:
    - "/home/lgtview/files_for_mongo:/files_for_mongo"

@@ -1,7 +1,10 @@
 #!/bin/bash
 
 echo -n "----------------------------------------------------------------------------------------------------"
-echo -e "\nWelcome to the LGTview installer. Please follow the prompts below that will help configure the security level of the site."
+echo -e "\nWelcome to the LGTView installer. Please follow the prompts below that will help configure the security level of the site."
+echo -e "\n\n*** PLEASE NOTE ***"
+echo -e "\nWhile there are various options here present to try and protect your data, YOU MUST VERIFY that the security is up to your standards before loading a sensitive dataset."
+echo -e "\n*******************\n"
 
 # First configure MySQL with or without a password depending on what the user wants.
 echo -n "----------------------------------------------------------------------------------------------------"
@@ -28,10 +31,11 @@ echo "--------------------------------------------------------------------------
 
 # At this point need to download a few files that are going to be mounted via
 # docker-compose so that MongoDB can be initiated with the necessary taxonomy data
-echo "Downloading necessary taxonomy files for LGTview......"
+echo "Setting up the necessary local directories and files for MongoDB......"
 if [ -d "/home/lgtview/files_for_mongo" ]; then
 	mkdir -p /home/lgtview/files_for_mongo
 fi
+
 # If they don't have these files, download and uncompress
 #if [ ! -f "/home/lgtview/files_for_mongo/gi_taxid_nucl.dmp*" ]; then
 #	wget gi_taxid_nucl.dmp.gz -O /home/lgtview/files_for_mongo/.
@@ -46,7 +50,24 @@ fi
 #	docker exec -it dockerlgtview_LGTview_1 gunzip /home/lgtview_files_for_mongo/nodes.dmp
 #fi
 #
+
 echo "----------------------------------------------------------------------------------------------------"
+
+echo -ne "\nWould you like to add SSL (via self-signed certificate) to encrypt transmitted sensitive data? Entering 'yes' is highly recommended. Entering 'no' is alright if this instance will not be hosted on a network and just on your own machine for your own use. Please enter 'yes' or 'no': "
+read ssl_response 
+
+# If the user wants to use SSL, close out the other ports during the build phase.
+if [ "$ssl_response" = 'yes' ]
+then
+	sed -i "/8080\:80/d" docker-compose.yml
+	sed -i "/EXPOSE 80/d" ./LGTview/Dockerfile
+else
+	sed -i "/443\:443/d" docker-compose.yml
+	sed -i "/EXPOSE 443/d" ./LGTview/Dockerfile
+fi
+
+echo "----------------------------------------------------------------------------------------------------"
+
 echo "Going to build and run the Docker containers now......"
 
 # Now, establish the following Docker containers:
@@ -65,11 +86,11 @@ echo -n "Docker containers done building and ready to go! Please follow the rest
 echo -ne "\n----------------------------------------------------------------------------------------------------"
 
 # Ask the user whether they want their site to be password protected
-echo -ne "\nWould you like to add password protection for viewing access to the LGTview site? Please enter 'yes' or 'no': "
+echo -ne "\nWould you like to add password protection for viewing access to the LGTView site? Entering 'yes' is highly recommended. Entering 'no' is alright if this instance will not be hosted on a network and just on your own machine for your own use. Please enter 'yes' or 'no': "
 read response 
 if [ "$response" = 'yes' ]; then
 
-		echo -ne "Please enter the desired username for accessing LGTview: "
+		echo -ne "Please enter the desired username for accessing LGTView: "
 		read username
 		echo -ne "Please enter the desired password for the username $username: "
 		read -s password
@@ -102,41 +123,44 @@ if [ "$response" = 'yes' ]; then
 fi
 
 echo -e "----------------------------------------------------------------------------------------------------"
-docker exec -it dockerlgtview_LGTview_1 sed -i '8s@443@443 https@' /etc/apache2/ports.conf
-docker exec -it dockerlgtview_LGTview_1 sed -i '5s@Listen 80@#Listen 80@' /etc/apache2/ports.conf
-docker exec -it dockerlgtview_LGTview_1 /etc/init.d/apache2 reload
+if [ "$ssl_response" = 'yes' ]
+then
+	docker exec -it dockerlgtview_LGTview_1 sed -i '8s@443@443 https@' /etc/apache2/ports.conf
+	docker exec -it dockerlgtview_LGTview_1 sed -i '5s@Listen 80@#Listen 80@' /etc/apache2/ports.conf
+	docker exec -it dockerlgtview_LGTview_1 /etc/init.d/apache2 reload
 
-# Can't think of a reason a user would not want https so just add
-# it in as default instead of prompting for it. 
-echo -n "Please answer the following in order to setup SSL (https) for the site."
-echo -ne "\nCountry Name (2 letter code) [US]: "
-read country
-echo -ne "State or Province Name (full name) [New York]: "
-read state
-echo -ne "Locality Name (eg, city) [New York City]: "
-read city
-echo -ne "Organization Name (eg, company) [University of Maryland]: "
-read organization
-echo -ne "Organizational Unit Name (eg, section) [Institute for Genome Sciences]: "
-read division
-echo -ne "Email for setup contact [the_best_email@domain.com]: "
-read email
-docker exec -it dockerlgtview_LGTview_1 openssl req -x509 -nodes -days 1460 -newkey rsa:2048 \
-	-keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt \
-	-subj "/C=$country/ST=$statei/L=$city/O=$organization/OU=$division/CA=TRUE/CN=localhost"
+	echo -n "Please answer the following in order to complete the SSL setup (https) for the site."
+	echo -ne "\nCountry Name (2 letter code) [US]: "
+	read country
+	echo -ne "State or Province Name (full name) [New York]: "
+	read state
+	echo -ne "Locality Name (eg, city) [New York City]: "
+	read city
+	echo -ne "Organization Name (eg, company) [University of Maryland]: "
+	read organization
+	echo -ne "Organizational Unit Name (eg, section) [Institute for Genome Sciences]: "
+	read division
+	echo -ne "Email for setup contact [the_best_email@domain.com]: "
+	read email
+	docker exec -it dockerlgtview_LGTview_1 openssl req -x509 -nodes -days 1460 -newkey rsa:2048 \
+		-keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt \
+		-subj "/C=$country/ST=$statei/L=$city/O=$organization/OU=$division/CA=TRUE/CN=localhost"
 
-# Modify the confs to use the newly generated SSL cert+key
-docker exec -it dockerlgtview_LGTview_1 sed -i '32s@/etc/ssl/certs/ssl-cert-snakeoil.pem@/etc/apache2/ssl/apache.crt@' /etc/apache2/sites-available/default-ssl.conf
-docker exec -it dockerlgtview_LGTview_1 sed -i '33s@/etc/ssl/private/ssl-cert-snakeoil.key@/etc/apache2/ssl/apache.key@' /etc/apache2/sites-available/default-ssl.conf
-docker exec -it dockerlgtview_LGTview_1 sed -i "3s/webmaster@localhost/$email/" /etc/apache2/sites-available/default-ssl.conf
-docker exec -it dockerlgtview_LGTview_1 sed -i "3a\\\t\tServerName localhost" /etc/apache2/sites-available/default-ssl.conf
-docker exec -it dockerlgtview_LGTview_1 sed -i "4a\\\t\tServerAlias lgtview" /etc/apache2/sites-available/default-ssl.conf
-docker exec -it dockerlgtview_LGTview_1 sed -i "1s/^/Listen 443\n/" /etc/apache2/sites-available/default-ssl.conf
+	# Modify the confs to use the newly generated SSL cert+key
+	docker exec -it dockerlgtview_LGTview_1 sed -i '32s@/etc/ssl/certs/ssl-cert-snakeoil.pem@/etc/apache2/ssl/apache.crt@' /etc/apache2/sites-available/default-ssl.conf
+	docker exec -it dockerlgtview_LGTview_1 sed -i '33s@/etc/ssl/private/ssl-cert-snakeoil.key@/etc/apache2/ssl/apache.key@' /etc/apache2/sites-available/default-ssl.conf
+	docker exec -it dockerlgtview_LGTview_1 sed -i "3s/webmaster@localhost/$email/" /etc/apache2/sites-available/default-ssl.conf
+	docker exec -it dockerlgtview_LGTview_1 sed -i "3a\\\t\tServerName localhost" /etc/apache2/sites-available/default-ssl.conf
+	docker exec -it dockerlgtview_LGTview_1 sed -i "4a\\\t\tServerAlias lgtview" /etc/apache2/sites-available/default-ssl.conf
+	docker exec -it dockerlgtview_LGTview_1 sed -i "1s/^/Listen 443\n/" /etc/apache2/sites-available/default-ssl.conf
 
-# Set this new SSL conf and restart Apache one last time. SSL should now be enabled
-docker exec -it dockerlgtview_LGTview_1 a2ensite default-ssl.conf
-docker exec -it dockerlgtview_LGTview_1 /etc/init.d/apache2 reload
-echo -ne "SSL now implemented (access site through https)."
+	# Set this new SSL conf and restart Apache one last time. SSL should now be enabled
+	docker exec -it dockerlgtview_LGTview_1 a2ensite default-ssl.conf
+	docker exec -it dockerlgtview_LGTview_1 /etc/init.d/apache2 reload
+	echo -ne "SSL now implemented (access site through https)."
+else
+	echo -ne "SSL NOT implemented (access site through http). Transmitted data is potentially subject to eavesdropping."
+fi
 echo -e "\n----------------------------------------------------------------------------------------------------"
 
 # Make sure the MySQL server container is up and running
