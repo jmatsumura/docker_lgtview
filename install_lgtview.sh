@@ -50,6 +50,7 @@ fi
 #	docker exec -it dockerlgtview_LGTview_1 gunzip /home/lgtview_files_for_mongo/nodes.dmp
 #fi
 #
+echo "Done Setting up the necessary local directories and files for MongoDB."
 
 echo "----------------------------------------------------------------------------------------------------"
 
