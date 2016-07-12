@@ -159,8 +159,10 @@ then
 	docker exec -it dockerlgtview_LGTview_1 a2ensite default-ssl.conf
 	docker exec -it dockerlgtview_LGTview_1 /etc/init.d/apache2 reload
 	echo -ne "SSL now implemented (access site through https)."
+	docker exec -it dockerlgtview_LGTview_1 sed -i "/localhost\:8080/d" /var/www/html/lgtview.js
 else
 	echo -ne "SSL NOT implemented (access site through http). Transmitted data is potentially subject to eavesdropping."
+	docker exec -it dockerlgtview_LGTview_1 sed -i "/localhost\:443/d" /var/www/html/lgtview.js
 fi
 echo -e "\n----------------------------------------------------------------------------------------------------"
 
