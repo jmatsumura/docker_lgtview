@@ -16,7 +16,7 @@ services:
    - 8080:80
   restart: always
   volumes:
-   - "/home/lgtview/files_for_mongo:/files_for_mongo"
+   - "/home/lgtview/files_for_mongo_and_twinblast:/files_for_mongo_and_twinblast"
   volumes_from:
    - mongodata
   environment:

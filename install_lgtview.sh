@@ -31,9 +31,9 @@ echo "--------------------------------------------------------------------------
 
 # At this point need to download a few files that are going to be mounted via
 # docker-compose so that MongoDB can be initiated with the necessary taxonomy data
-echo "Setting up the necessary local directories and files for MongoDB......"
-if [ -d "/home/lgtview/files_for_mongo" ]; then
-	mkdir -p /home/lgtview/files_for_mongo
+echo "Setting up the necessary local directories and files for MongoDB and TwinBLAST......"
+if [ -d "/home/lgtview/files_for_mongoand_twinblast" ]; then
+	mkdir -p /home/lgtview/files_for_mongo_and_twinblast
 fi
 
 # If they don't have these files, download and uncompress

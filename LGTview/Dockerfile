@@ -15,7 +15,8 @@ RUN sudo apt-get update && sudo apt-get install -y apache2 \
 RUN sudo mkdir /etc/apache2/{conf.d,ssl} \
 				/var/www/html/{conf,cgi,tmp} \
 				&& sudo mkdir -p /export/lgt/{files,indexes} \
-				&& sudo chmod 777 /var/www/html/tmp
+				&& sudo chmod 777 /var/www/html/tmp \
+				&& sudo chmod 777 /export/lgt/indexes
 
 # Add in FQDN for SSL
 RUN sudo echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/fqdn.conf
