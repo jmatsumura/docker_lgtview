@@ -30,7 +30,7 @@ fi
 if [ -d "./.data/db" ]; then
 	mkdir -p ./.data/db
 fi
-echo "\n----------------------------------------------------------------------------------------------------"
+echo -e "----------------------------------------------------------------------------------------------------"
 
 # At this point need to download a few files that are going to be mounted via
 # docker-compose so that MongoDB can be initiated with the necessary taxonomy data
@@ -45,25 +45,12 @@ fi
 if [ ! -f "/home/lgtview/files_for_mongo_and_twinblast/example_blastn.out" ]; then
 	wget -O /home/lgtview/files_for_mongo_and_twinblast/example_blastn.out https://sourceforge.net/projects/lgthgt/files/example_blastn.out/download
 fi
-# If they don't have these files, download and uncompress
-#if [ ! -f "/home/lgtview/files_for_mongo/gi_taxid_nucl.dmp*" ]; then
-#	wget gi_taxid_nucl.dmp.gz -O /home/lgtview/files_for_mongo/.
-#	docker exec -it dockerlgtview_LGTview_1 gunzip /home/lgtview_files_for_mongo/gi_taxid_nucl.dmp
-#fi
-#if [ ! -f "/home/lgtview/files_for_mongo/names.dmp*" ]; then
-#	wget names.dmp.gz -O /home/lgtview/files_for_mongo/.
-#	docker exec -it dockerlgtview_LGTview_1 gunzip /home/lgtview_files_for_mongo/names.dmp
-#fi
-#if [ ! -f "/home/lgtview/files_for_mongo/nodes.dmp*" ]; then
-#	wget nodes.dmp.gz -O /home/lgtview/files_for_mongo/.
-#	docker exec -it dockerlgtview_LGTview_1 gunzip /home/lgtview_files_for_mongo/nodes.dmp
-#fi
-#
-echo "\nDone Setting up the necessary local directories and files for MongoDB."
+
+echo -e "\nDone Setting up the necessary local directories and files for MongoDB."
 
 echo "----------------------------------------------------------------------------------------------------"
 
-echo -ne "\nWould you like to add SSL (via self-signed certificate) to encrypt transmitted sensitive data? Entering 'yes' is highly recommended. Entering 'no' is alright if this instance will not be hosted on a network and just on your own machine for your own use. Please enter 'yes' or 'no': "
+echo -e "\nWould you like to add SSL (via self-signed certificate) to encrypt transmitted sensitive data? Entering 'yes' is highly recommended. Entering 'no' is alright if this instance will not be hosted on a network and just on your own machine for your own use. Please enter 'yes' or 'no': "
 read ssl_response 
 
 # If the user wants to use SSL, close out the other ports during the build phase.
@@ -76,9 +63,9 @@ else
 	sed -i "/EXPOSE 443/d" ./LGTview/Dockerfile
 fi
 
-echo "\n----------------------------------------------------------------------------------------------------"
+echo "----------------------------------------------------------------------------------------------------"
 
-echo "\nGoing to build and run the Docker containers now......"
+echo -e "\nGoing to build and run the Docker containers now......"
 
 # Now, establish the following Docker containers:
 # 1. dockerlgtview_LGTview_1
@@ -91,8 +78,8 @@ echo "\nGoing to build and run the Docker containers now......"
 #  - Houses the MySQL server
 docker-compose up -d
 
-echo "\n----------------------------------------------------------------------------------------------------"
-echo -n "Docker containers done building and ready to go! Please follow the rest of the installation prompts."
+echo -e "\n----------------------------------------------------------------------------------------------------"
+echo "Docker containers done building and ready to go! Please follow the rest of the installation prompts."
 echo -ne "\n----------------------------------------------------------------------------------------------------"
 
 # Ask the user whether they want their site to be password protected
@@ -201,4 +188,4 @@ docker exec -it dockerlgtview_LGTview_1 perl /lgtview/bin/lgt_load_mongo.pl --me
 echo "MongoDB loaded."
 
 echo -e "\n----------------------------------------------------------------------------------------------------"
-echo -e "\nLGTView installation completed."
+echo -e "\nLGTView installation completed.\n"
