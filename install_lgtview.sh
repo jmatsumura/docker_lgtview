@@ -1,13 +1,13 @@
 #!/bin/bash
 
-echo -n "----------------------------------------------------------------------------------------------------"
+echo "----------------------------------------------------------------------------------------------------"
 echo -e "\nWelcome to the LGTView installer. Please follow the prompts below that will help configure the security level of the site."
 echo -e "\n\n*** PLEASE NOTE ***"
 echo -e "\nWhile there are various options here present to try and protect your data, YOU MUST VERIFY that the security is up to your standards before loading a sensitive dataset."
 echo -e "\n*******************\n"
 
 # First configure MySQL with or without a password depending on what the user wants.
-echo -n "----------------------------------------------------------------------------------------------------"
+echo "----------------------------------------------------------------------------------------------------"
 echo -ne "\nWould you like to add a password for the root MySQL user? Please enter 'yes' or 'no': "
 read response 
 if [ "$response" = 'yes' ]; then
@@ -39,10 +39,10 @@ if [ -d "/home/lgtview/files_for_mongo_and_twinblast" ]; then
 	mkdir -p /home/lgtview/files_for_mongo_and_twinblast
 fi
 
-if [ ! -f "/home/lgtview/files_for_mongo_and_twinblast/example_metadata.out"]; then
+if [ ! -f "/home/lgtview/files_for_mongo_and_twinblast/example_metadata.out" ]; then
 	wget -O /home/lgtview/files_for_mongo_and_twinblast/example_metadata.out https://sourceforge.net/projects/lgthgt/files/example_metadata.out/download
 fi
-if [ ! -f "/home/lgtview/files_for_mongo_and_twinblast/example_blastn.out"]; then
+if [ ! -f "/home/lgtview/files_for_mongo_and_twinblast/example_blastn.out" ]; then
 	wget -O /home/lgtview/files_for_mongo_and_twinblast/example_blastn.out https://sourceforge.net/projects/lgthgt/files/example_blastn.out/download
 fi
 # If they don't have these files, download and uncompress
