@@ -27,15 +27,24 @@ if [ "$response" = 'yes' ]; then
 	sed -i "26s/ALLOW_EMPTY_PASSWORD: 1/ROOT_PASSWORD: $password_confirm/" ./docker-compose.yml
 	echo -e "\nDone setting root password for MySQL."
 fi
-echo "----------------------------------------------------------------------------------------------------"
+if [ -d "./.data/db" ]; then
+	mkdir -p ./.data/db
+fi
+echo "\n----------------------------------------------------------------------------------------------------"
 
 # At this point need to download a few files that are going to be mounted via
 # docker-compose so that MongoDB can be initiated with the necessary taxonomy data
-echo "Setting up the necessary local directories and files for MongoDB and TwinBLAST......"
-if [ -d "/home/lgtview/files_for_mongoand_twinblast" ]; then
+echo "\nSetting up the necessary local directories and files for MongoDB and TwinBLAST......"
+if [ -d "/home/lgtview/files_for_mongo_and_twinblast" ]; then
 	mkdir -p /home/lgtview/files_for_mongo_and_twinblast
 fi
 
+if [ ! -f "/home/lgtview/files_for_mongo_and_twinblast/example_metadata.out"]; then
+	wget -O /home/lgtview/files_for_mongo_and_twinblast/example_metadata.out https://sourceforge.net/projects/lgthgt/files/example_metadata.out/download
+fi
+if [ ! -f "/home/lgtview/files_for_mongo_and_twinblast/example_blastn.out"]; then
+	wget -O /home/lgtview/files_for_mongo_and_twinblast/example_blastn.out https://sourceforge.net/projects/lgthgt/files/example_blastn.out/download
+fi
 # If they don't have these files, download and uncompress
 #if [ ! -f "/home/lgtview/files_for_mongo/gi_taxid_nucl.dmp*" ]; then
 #	wget gi_taxid_nucl.dmp.gz -O /home/lgtview/files_for_mongo/.
@@ -50,7 +59,7 @@ fi
 #	docker exec -it dockerlgtview_LGTview_1 gunzip /home/lgtview_files_for_mongo/nodes.dmp
 #fi
 #
-echo "Done Setting up the necessary local directories and files for MongoDB."
+echo "\nDone Setting up the necessary local directories and files for MongoDB."
 
 echo "----------------------------------------------------------------------------------------------------"
 
@@ -67,9 +76,9 @@ else
 	sed -i "/EXPOSE 443/d" ./LGTview/Dockerfile
 fi
 
-echo "----------------------------------------------------------------------------------------------------"
+echo "\n----------------------------------------------------------------------------------------------------"
 
-echo "Going to build and run the Docker containers now......"
+echo "\nGoing to build and run the Docker containers now......"
 
 # Now, establish the following Docker containers:
 # 1. dockerlgtview_LGTview_1
@@ -82,7 +91,7 @@ echo "Going to build and run the Docker containers now......"
 #  - Houses the MySQL server
 docker-compose up -d
 
-echo "----------------------------------------------------------------------------------------------------"
+echo "\n----------------------------------------------------------------------------------------------------"
 echo -n "Docker containers done building and ready to go! Please follow the rest of the installation prompts."
 echo -ne "\n----------------------------------------------------------------------------------------------------"
 
@@ -173,8 +182,12 @@ while [ "$UP" -ne 1 ]; do
 	sleep 5
 done
 
+echo "Going to prepare the MySQL database..."
 # Now populate the MySQL database to prepare for curation via TwinBLAST
 docker exec -it dockerlgtview_LGTview_1 perl /lgtview/bin/init_db.pl
+docker exec -it dockerlgtview_LGTview_1 mv /files_for_mongo_and_twinblast/example_blastn.out /export/lgt/files/.
+echo "MySQL database now ready."
+echo -e "\n----------------------------------------------------------------------------------------------------"
 
 # Make sure the MongoDB server container is up and running
 UP1=$(docker ps -a | grep 'mongo:2.6' | grep 'Up' | wc -l);
@@ -183,6 +196,9 @@ while [ "$UP1" -ne 1 ]; do
 	sleep 5
 done
 
-# Now initialize MongoDB. Need the dump taken from revan in order to accommodate
-# the necessary taxonomic assignments. 
-#docker exec -it dockerlgtview_LGTview_1 perl /lgtview/bin/load_mongo_gi2taxon.pl
+echo "Going to load example data into MongoDB..."
+docker exec -it dockerlgtview_LGTview_1 perl /lgtview/bin/lgt_load_mongo.pl --metadata=/files_for_mongo_and_twinblast/example_metadata.out --db=lgtview_example --host=172.18.0.1:27017
+echo "MongoDB loaded."
+
+echo -e "\n----------------------------------------------------------------------------------------------------"
+echo -e "\nLGTView installation completed."
