@@ -1,6 +1,7 @@
 # docker_lgtview
 This repository houses multiple Dockerfiles that can be used to build an example 
-and ultimately customizable instance of LGTview.
+and ultimately customizable instance of LGTview. This pulls the source LGTView code from 
+https://github.com/jmatsumura/lgtview
 
 There will be multiple containers/images spanning the various components of LGTview that
 must be combined using docker-compose and the docker-compose.yml file. Below is a 
