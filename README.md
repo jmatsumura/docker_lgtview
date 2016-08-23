@@ -1,4 +1,8 @@
 # docker_lgtview
+
+This repository is now bundled under the https://github.com/jmatsumura/LGTHGT repository
+which will eventually hold both the components for LGTView as well as LGTSeek.
+
 This repository houses multiple Dockerfiles that can be used to build an example 
 and ultimately customizable instance of LGTview. This pulls the source LGTView code from 
 https://github.com/jmatsumura/lgtview
